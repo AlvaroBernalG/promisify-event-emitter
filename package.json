@@ -1,0 +1,15 @@
+{
+  "name": "promisify-envent-emitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./bin/index.js",
+  "scripts": {
+    "build": "rm -rf ./bin || mkdir bin && tsc --lib dom,es6 *.ts --outDir ./bin",
+    "test": "npm run build && node ./bin/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}
