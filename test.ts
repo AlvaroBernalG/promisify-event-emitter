@@ -6,6 +6,9 @@ enum EXIT {
 }
 
 const log = console.log;
+const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+const sum = (a: number, b:number): number => a + b;
+
 const assert = (result: boolean, ...title: any[]) => {
   if (result === false) {
     log('');
@@ -17,16 +20,12 @@ const assert = (result: boolean, ...title: any[]) => {
   log('\x1b[32m%s\x1b[0m', ...title); 
 }
 
-const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-const sum = (a: number, b:number): number => a + b;
-
 let events = new EventPromise<string | void>(); 
 
 const countOne = async (): Promise<string> => {
   return 'one';
 }
 
-// console.log(process.exit(1));
 events.on('counter', countOne);
 
 events.on('counter', async (_: Message<string>): Promise<string> => {
@@ -74,19 +73,21 @@ numbers.on('sum', plusOne);
   assert(events.emit('counter') instanceof Promise, 'emit() should return a Promise.');
 
   const res = await events.emit('counter', {payload: 'yeap'});
-  assert(res.join(' ') === 'one two three', 'Result should have been one two three. Instead got [' +res.join(' ')+ ']');
-  events.emit('other');
-  const [doubleres] = await evn.emit('double', {payload: 2});
-  assert(doubleres === 4, 'Result of double should have been 4. Instead got ', doubleres);
+  assert(res.join(' ') === 'one two three', 'emit() should return the value of all listeners.', res.join(' '));
 
   numbers.off('sum', plusOne);
   let sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult.reduce(sum, 0) === 2, 'The sumResult should be [1]. Instead got '+ sumResult);
+  assert(sumResult.reduce(sum, 0) === 2, 'off() should be able to remove all callbacks instances.', sumResult);
 
-  // Should be able to remove events.
-  numbers.off('sum')
+  numbers.off('sum');
   sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult === undefined, 'The sumResult should be undefined. Instead got '+ sumResult);
+  assert(sumResult === undefined, 'off() should be able to remove all callbacks of a namespace if no callback instance is passed.', sumResult);
+
+  numbers.on('once', async(m: Message<number>): Promise<number> => {
+    assert(m.payload === 3, 'on() callback should correctly handle execution.');
+    return m.payload;
+  });
+  numbers.emit('once', {payload: 3});
 
 })();
 
