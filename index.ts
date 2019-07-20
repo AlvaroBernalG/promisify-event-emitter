@@ -15,11 +15,12 @@ export type Callback<T> = (message: Message<T>) => Promise<T>;
 class EventPromise<A> {
   private callbacks = new Map<string, Array<Callback<A>>>();
 
-  on(eventName: string, eventCallback: Callback<A>) {
+  on(eventName: string, eventCallback: Callback<A>): EventPromise<A> {
     let events = this.callbacks.get(eventName);
     events = events  === undefined ? [] : events;
     events.push(eventCallback);
     this.callbacks.set(eventName, events);
+    return this;
   }
 
   async emit(eventName, message?: Message<A>): Promise<Array<A>> {
@@ -28,7 +29,7 @@ class EventPromise<A> {
     return Promise.all(events.map(event => event(message)));
   }
 
-  off(eventName, eventCallback?: Callback<A>) : void {
+  off(eventName, eventCallback?: Callback<A>): EventPromise<A> {
     if(this.callbacks.has(eventName) === false) return;
     if (eventCallback === undefined) {
       this.callbacks.delete(eventName);
@@ -37,6 +38,7 @@ class EventPromise<A> {
     let callbacks = this.callbacks.get(eventName);
     callbacks = removeWhile(callbacks, (cb) => cb === eventCallback);
     this.callbacks.set(eventName, callbacks);
+    return this;
   }
 }
 
