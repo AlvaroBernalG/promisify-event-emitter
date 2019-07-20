@@ -28,10 +28,10 @@ class EventEmitterPromisified<A> {
   }
 
   off(eventName, eventCallback?: Callback<A>): EventEmitterPromisified<A> {
-    if(this.callbacks.has(eventName) === false) return;
+    if(this.callbacks.has(eventName) === false) return this;
     if (eventCallback === undefined) {
       this.callbacks.delete(eventName);
-      return;
+      return this;
     }
     let callbacks = this.callbacks.get(eventName);
     callbacks = removeWhile(callbacks, (cb) => cb === eventCallback);
