@@ -50,6 +50,14 @@ class EventEmitterPromisified<A> {
     }
     return keys;
   }
+
+  once(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A> {
+    const removableCB = async (m: Message<A>): Promise<A> => {
+      this.off(eventName, removableCB);
+      return eventCallback(m);
+    };
+    return this.on(eventName, removableCB);
+  }
 }
 
 export default EventEmitterPromisified;

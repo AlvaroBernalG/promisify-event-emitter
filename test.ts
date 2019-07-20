@@ -106,5 +106,18 @@ numbers.on('sum', plusOne);
   assert(eventNames.eventNames().join(' ') === '0 1 2', 
     'eventNames() should return an array with all the eventnames registered.', eventNames.eventNames().join(' '));
 
+  const oncetest = new EventPromise<number>();
+  let counter = 0;
+  oncetest.once('oncetest', async (m: Message<number>): Promise<number> => {
+    counter += 1;
+    m.payload += 2;
+    return m.payload;
+  });
+  const onceTestRes = await oncetest.emit('oncetest', {payload: counter});
+  oncetest.emit('oncetest');
+  oncetest.emit('oncetest');
+  assert(counter === 1 && onceTestRes.length === 1 && onceTestRes[0] === 2, 
+    'once() should register a callback that is only called once and then removed.', 
+    counter, onceTestRes);
 })();
 
