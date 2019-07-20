@@ -12,5 +12,8 @@
   "devDependencies": {
     "@types/node": "^12.6.8",
     "typescript": "^3.5.3"
-  }
+  },
+  "files" : [
+    "./bin/index.js"
+  ]
 }
