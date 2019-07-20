@@ -38,6 +38,10 @@ class EventPromise<A> {
     this.callbacks.set(eventName, callbacks);
     return this;
   }
+
+  listeners(eventName: string): Array<Callback<A>> {
+    return this.callbacks.get(eventName);
+  }
 }
 
 export default EventPromise;
