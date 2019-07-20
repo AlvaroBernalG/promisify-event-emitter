@@ -72,6 +72,8 @@ numbers.on('sum', plusOne);
 
   assert(events.emit('counter') instanceof Promise, 'emit() should return a Promise.');
 
+  assert(events.emit('does not exits') instanceof Promise, 'emit() should return a Promise when no callbacks are registered with a namespace.');
+
   const res = await events.emit('counter', {payload: 'yeap'});
   assert(res.join(' ') === 'one two three', 'emit() should return the value of all listeners.', res.join(' '));
 
@@ -81,13 +83,14 @@ numbers.on('sum', plusOne);
 
   numbers.off('sum');
   sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult === undefined, 'off() should be able to remove all callbacks of a namespace if no callback instance is passed.', sumResult);
+  assert(sumResult.length === 0, 'off() should be able to remove all callbacks of a namespace if no callback instance is passed.', sumResult);
 
   numbers.on('once', async(m: Message<number>): Promise<number> => {
     assert(m.payload === 3, 'on() callback should correctly handle execution.');
     return m.payload;
   });
   numbers.emit('once', {payload: 3});
+
 
 })();
 

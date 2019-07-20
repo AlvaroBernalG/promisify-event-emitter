@@ -22,7 +22,7 @@ class EventPromise<A> {
   }
 
   async emit(eventName, message?: Message<A>): Promise<Array<A>> {
-    if (this.callbacks.has(eventName) === false) return;
+    if (this.callbacks.has(eventName) === false) return Promise.resolve([]);
     const events = this.callbacks.get(eventName);
     return Promise.all(events.map(event => event(message)));
   }
