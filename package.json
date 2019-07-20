@@ -4,7 +4,7 @@
   "description": "Another implementation of Event Emitter but with Promises",
   "main": "./bin/index.js",
   "scripts": {
-    "build": "rm -rf ./bin || mkdir bin && tsc --lib dom,es6 *.ts --outDir ./bin",
+    "build": "rm -rf ./bin || mkdir bin && tsc --downlevelIteration --lib dom,es6 *.ts --outDir ./bin",
     "test": "npm run build && node ./bin/test.js"
   },
   "author": "",

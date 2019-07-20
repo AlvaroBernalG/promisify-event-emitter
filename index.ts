@@ -42,6 +42,14 @@ class EventEmitterPromisified<A> {
   listeners(eventName: string): Array<Callback<A>> {
     return this.callbacks.get(eventName);
   }
+
+  eventNames(): Array<string> {
+    const keys = [];
+    for (let x of this.callbacks.keys()) {
+      keys.push(x);
+    }
+    return keys;
+  }
 }
 
 export default EventEmitterPromisified;
