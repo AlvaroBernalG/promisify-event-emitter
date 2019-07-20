@@ -10,10 +10,10 @@ export interface Message<T> {
 
 export type Callback<T> = (emitterMessage: Message<T>) => Promise<T>;
 
-class EventPromise<A> {
+class EventEmitterPromisified<A> {
   private callbacks = new Map<string, Array<Callback<A>>>();
 
-  on(eventName: string, eventCallback: Callback<A>): EventPromise<A> {
+  on(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A> {
     let events = this.callbacks.get(eventName);
     events = events  === undefined ? [] : events;
     events.push(eventCallback);
@@ -27,7 +27,7 @@ class EventPromise<A> {
     return Promise.all(events.map(event => event(message)));
   }
 
-  off(eventName, eventCallback?: Callback<A>): EventPromise<A> {
+  off(eventName, eventCallback?: Callback<A>): EventEmitterPromisified<A> {
     if(this.callbacks.has(eventName) === false) return;
     if (eventCallback === undefined) {
       this.callbacks.delete(eventName);
@@ -44,4 +44,4 @@ class EventPromise<A> {
   }
 }
 
-export default EventPromise;
+export default EventEmitterPromisified;
