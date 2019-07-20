@@ -1,5 +1,5 @@
 {
-  "name": "promisify-envent-emitter",
+  "name":"ts-promisify-event-emitter",
   "version": "1.0.1",
   "description": "",
   "main": "./bin/index.js",
