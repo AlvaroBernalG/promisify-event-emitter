@@ -1,5 +1,3 @@
-const log = console.log;
-
 function removeWhile<T> (arr: Array<T>, fn: (T) => boolean): Array<T> {
   return arr.reduce((acc: Array<T>, next: T) =>
     fn(next) ? acc : [...acc, next]
@@ -10,7 +8,7 @@ export interface Message<T> {
   payload: T
 }
 
-export type Callback<T> = (message: Message<T>) => Promise<T>;
+export type Callback<T> = (emitterMessage: Message<T>) => Promise<T>;
 
 class EventPromise<A> {
   private callbacks = new Map<string, Array<Callback<A>>>();
