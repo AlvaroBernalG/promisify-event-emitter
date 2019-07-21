@@ -3,6 +3,7 @@
   "version": "1.0.8",
   "description": "Another implementation of Event Emitter but with Promises",
   "main": "./bin/index.js",
+  "types": "./bin/main.d.ts",
   "scripts": {
     "build": "rm -rf ./bin || mkdir bin && tsc --downlevelIteration --lib dom,es6 *.ts --outDir ./bin && cp ./main.d.ts ./bin/",
     "test": "npm run build && node ./bin/test.js"
@@ -17,7 +18,6 @@
     "type": "git",
     "url": "https://github.com/AlvaroBernalG/ts-promisify-event-emitter"
   },
-  "types": "./bin/main.d.ts",
   "files" : [
     "./bin/index.js",
     "./bin/main.d.ts"

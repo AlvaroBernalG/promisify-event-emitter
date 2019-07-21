@@ -1,4 +1,3 @@
-
 declare interface Message<T> {
     payload: T
 }
@@ -23,4 +22,3 @@ declare class  EventEmitterPromisified<A> {
 
     times(eventName, eventCallback: Callback<A>, times: number): EventEmitterPromisified<A>;
 }
-
