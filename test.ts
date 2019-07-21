@@ -20,56 +20,20 @@ const assert = (result: boolean, ...title: any[]) => {
   log('\x1b[32m%s\x1b[0m', ...title); 
 }
 
-let events = new EventPromise<string | void>(); 
-
-const countOne = async (): Promise<string> => {
-  return 'one';
-}
-
-events.on('counter', countOne);
-
-events.on('counter', async (_: Message<string>): Promise<string> => {
-  await wait(300); 
-  return 'two';
-});
-
-events.on('counter', async () => 'three');
-
-let evn = new EventPromise<number>();
-
-evn.on('double', async (m: Message<number>): Promise<number> => {
-  let timeout = m.payload === 3 ? 1000 : 300;
-  await wait(timeout);
-  return m.payload * 2;
-});
-
-events.on('other', async () => {
-  await wait(300);
-  return 'other';
-});
-
-events.on('other', async () => {
-  return 'test';
-});
-
-const numbers = new EventPromise<number>();
-
-numbers.on('sum', async (m: Message<number>) => {
-  return m.payload + 1;
-});
-
-numbers.on('sum', async (m: Message<number>) => {
-  return m.payload + 1;
-});
-
-let plusOne = async (m: Message<number>) => m.payload++
-
-numbers.on('sum', plusOne);
-
 (async function start() {
 
   log('Starting test...');
-
+  const events = new EventPromise<string, string>(); 
+  const countOne = async (): Promise<string> => {
+    return 'one';
+  }
+  events.on('counter', countOne);
+  events.on('counter', async (): Promise<string> => {
+    await wait(300); 
+    return 'two';
+  });
+  events.on('counter', async () => 'three');
+  
   assert(events.emit('counter') instanceof Promise, 'emit() should return a Promise.');
 
   assert(events.emit('does not exits') instanceof Promise, 'emit() should return a Promise when no callbacks are registered with a event name.');
@@ -77,6 +41,15 @@ numbers.on('sum', plusOne);
   const res = await events.emit('counter', {payload: 'yeap'});
   assert(res.join(' ') === 'one two three', 'emit() should return the value of all listeners.', res.join(' '));
 
+  const numbers = new EventPromise<number,number>();
+  numbers.on('sum', async (m: Message<number>) => {
+    return m.payload + 1;
+  });
+  numbers.on('sum', async (m: Message<number>) => {
+    return m.payload + 1;
+  });
+  const plusOne = async (m: Message<number>) => m.payload++
+  numbers.on('sum', plusOne);
   numbers.off('sum', plusOne);
   let sumResult = await numbers.emit('sum', {payload: 0});
   assert(sumResult.reduce(sum, 0) === 2, 'off() should be able to remove all callbacks instances.', sumResult);
@@ -91,22 +64,22 @@ numbers.on('sum', plusOne);
   });
   numbers.emit('once', {payload: 3});
 
-  const listTest = new EventPromise<number>();
-  const dummyListenerCallback = async (_: Message<number>) => 1;
+  const listTest = new EventPromise<void, number>();
+  const dummyListenerCallback = async () => 1;
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
   assert(listTest.listeners('listeners').length === 3, 
     'listeners() should return list of all callbacks registered in a event name.', listTest.listeners('listeners').length);
   
-  const eventNames = new EventPromise<number>();
+  const eventNames = new EventPromise<void, number>();
   eventNames.on('0', dummyListenerCallback);
   eventNames.on('1', dummyListenerCallback);
   eventNames.on('2', dummyListenerCallback);
   assert(eventNames.eventNames().join(' ') === '0 1 2', 
     'eventNames() should return an array with all the eventnames registered.', eventNames.eventNames().join(' '));
 
-  const oncetest = new EventPromise<number>();
+  const oncetest = new EventPromise<number, number>();
   let counter = 0;
   oncetest.once('oncetest', async (m: Message<number>): Promise<number> => {
     counter += 1;
@@ -122,7 +95,7 @@ numbers.on('sum', plusOne);
     'once() should register a callback that is only called once and then removed.', 
     counter, onceTestRes);
 
-  const timestest = new EventPromise<number>();
+  const timestest = new EventPromise<number, number>();
   counter = 0;
   timestest.times('timetestEventName', async (m: Message<number>): Promise<number> => {
     counter += 1;
@@ -138,7 +111,7 @@ numbers.on('sum', plusOne);
     'times() should register a callback that is only called n amount of times and then removed.', 
     counter, onceTestRes);
 
-  const prependTest = new EventPromise<string>();
+  const prependTest = new EventPromise<string, string>();
   const sayOne = async(m: Message<string>): Promise<string> => 'one' + m.payload 
   const sayTwo = async(m: Message<string>): Promise<string> => 'two' + m.payload
   const sayThree = async(m: Message<string>): Promise<string> =>  'three' + m.payload
