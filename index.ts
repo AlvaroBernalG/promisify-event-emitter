@@ -14,11 +14,21 @@ class EventEmitterPromisified<A> {
   private callbacks = new Map<string, Array<Callback<A>>>();
 
   on(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A> {
+    const events = this.getCallbacks(eventName);
+    this.callbacks.set(eventName, [...events, eventCallback]);
+    return this;
+  }
+
+  prepend(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A> {
+    const events = this.getCallbacks(eventName);
+    this.callbacks.set(eventName, [eventCallback, ...events]);
+    return this;
+  }
+
+  private getCallbacks(eventName: string): Array<Callback<A>> {
     let events = this.callbacks.get(eventName);
     events = events  === undefined ? [] : events;
-    events.push(eventCallback);
-    this.callbacks.set(eventName, events);
-    return this;
+    return events;
   }
 
   async emit(eventName: string, message?: Message<A>): Promise<Array<A>> {
@@ -32,7 +42,7 @@ class EventEmitterPromisified<A> {
       this.callbacks.delete(eventName);
       return this;
     }
-    let callbacks = this.callbacks.get(eventName);
+    let callbacks = this.getCallbacks(eventName);
     callbacks = removeWhile(callbacks, (cb) => cb === eventCallback);
     this.callbacks.set(eventName, callbacks);
     return this;
@@ -57,7 +67,6 @@ class EventEmitterPromisified<A> {
   times(eventName, eventCallback: Callback<A>, times: number): EventEmitterPromisified<A>  {
     const removableCB = async (m: Message<A>): Promise<A> => {
       if((times -= 1) < 1) this.off(eventName, removableCB);
-      
       return eventCallback(m);
     };
     return this.on(eventName, removableCB);
