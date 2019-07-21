@@ -142,11 +142,10 @@ numbers.on('sum', plusOne);
   const sayOne = async(m: Message<string>): Promise<string> => 'one' + m.payload 
   const sayTwo = async(m: Message<string>): Promise<string> => 'two' + m.payload
   const sayThree = async(m: Message<string>): Promise<string> =>  'three' + m.payload
-  
   prependTest.prepend('prependtest', sayOne);
   prependTest.prepend('prependtest', sayTwo);
   prependTest.prepend('prependtest', sayThree);
   let message = await prependTest.emit('prependtest', {payload: ''});
-  assert(message.join(' ') === 'three two one', 'prepend() should position itself inside.', message);
+  assert(message.join(' ') === 'three two one', 'prepend() should add callbacks at the begining of the array.', message);
 
 })();
