@@ -13,12 +13,17 @@ Basic usage:
 ```js
 import EventEmitterPromisified, {Message, Callback} from 'ts-promisify-event-emitter';
 
+// Result type
 interface IUser {
     name: string;
     lastname: string;
 }
+// Query type
+interface IQuery {
+  id: string;
+}
 
-function getUserFromDatabase(id: string): IUser {
+async function getUserFromDatabase(id: string): Promise<IUser> {
     // do something async
     return {
         name: 'Test',
@@ -26,18 +31,18 @@ function getUserFromDatabase(id: string): IUser {
     }
 }
 
-const events = new EventEmitterPromisified<{id:string}, IUser>();
+const events = new EventEmitterPromisified<IQuery, IUser>();
 
-const callback: Callback<{id: string}, IUser> = async (message: Message<{id:string}>): Promise<IUser> => {
-    const user: IUser = await getUserFromDatabase(message.payload.id);
-    return user;
+const callback: Callback<IQuery, IUser> = async (message: Message<IQuery>): Promise<IUser> => {
+  const user: IUser = await getUserFromDatabase(message.payload.id);
+  return user;
 }
 
 events.on('getUser', callback);
 
 (async function start() {
-  const message: Message<{id:string}> = {payload: {id: "ID-1234"}};
-  const [user] = await events.emit('getUser', message);
+  const query: Message<IQuery> = {payload: {id: "ID-1234"}};
+  const [user] = await events.emit('getUser', query);
   console.log(`The user is: Name=${user.name}, lastname=${user.lastname}.`);
 })();
 ```
