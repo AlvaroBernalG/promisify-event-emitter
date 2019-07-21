@@ -52,8 +52,13 @@ class EventEmitterPromisified<A> {
   }
 
   once(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A> {
+    return this.times(eventName, eventCallback, 1);
+  }
+
+  times(eventName, eventCallback: Callback<A>, times: number): EventEmitterPromisified<A>  {
     const removableCB = async (m: Message<A>): Promise<A> => {
-      this.off(eventName, removableCB);
+      if((times -= 1) < 1) this.off(eventName, removableCB);
+      
       return eventCallback(m);
     };
     return this.on(eventName, removableCB);

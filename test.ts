@@ -113,11 +113,30 @@ numbers.on('sum', plusOne);
     m.payload += 2;
     return m.payload;
   });
-  const onceTestRes = await oncetest.emit('oncetest', {payload: counter});
+  let onceTestRes = await oncetest.emit('oncetest', {payload: counter});
+  oncetest.emit('oncetest');
+  oncetest.emit('oncetest');
   oncetest.emit('oncetest');
   oncetest.emit('oncetest');
   assert(counter === 1 && onceTestRes.length === 1 && onceTestRes[0] === 2, 
     'once() should register a callback that is only called once and then removed.', 
     counter, onceTestRes);
+
+  const timestest = new EventPromise<number>();
+  counter = 0;
+  timestest.times('timetestEventName', async (m: Message<number>): Promise<number> => {
+    counter += 1;
+    m.payload += 2;
+    return m.payload;
+  }, 3);
+  await timestest.emit('timetestEventName', {payload: counter});
+  await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
+  await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
+  await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
+  await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
+  assert(counter === 3 && onceTestRes.length === 1, 
+    'times() should register a callback that is only called n amount of times and then removed.', 
+    counter, onceTestRes);
+
 })();
 
