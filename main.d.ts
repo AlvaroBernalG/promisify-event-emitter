@@ -1,10 +1,10 @@
-declare interface Message<T> {
+export interface Message<T> {
     payload: T
 }
 
-declare type Callback<T> = (emitterMessage: Message<T>) => Promise<T>;
+export type Callback<T> = (emitterMessage: Message<T>) => Promise<T>;
 
-declare class  EventEmitterPromisified<A> {
+export default class EventEmitterPromisified<A> {
 
     on(eventName: string, eventCallback: Callback<A>): EventEmitterPromisified<A>;
 
