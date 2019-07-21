@@ -21,14 +21,13 @@ class EventEmitterPromisified<A> {
     return this;
   }
 
-  async emit(eventName, message?: Message<A>): Promise<Array<A>> {
+  async emit(eventName: string, message?: Message<A>): Promise<Array<A>> {
     if (this.callbacks.has(eventName) === false) return Promise.resolve([]);
     const events = this.callbacks.get(eventName);
     return Promise.all(events.map(event => event(message)));
   }
 
-  off(eventName, eventCallback?: Callback<A>): EventEmitterPromisified<A> {
-    if(this.callbacks.has(eventName) === false) return this;
+  off(eventName: string, eventCallback?: Callback<A>): EventEmitterPromisified<A> {
     if (eventCallback === undefined) {
       this.callbacks.delete(eventName);
       return this;
