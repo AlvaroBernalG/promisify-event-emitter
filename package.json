@@ -1,6 +1,6 @@
 {
   "name": "ts-promisify-event-emitter",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "Another implementation of Event Emitter but with Promises",
   "main": "./bin/index.js",
   "types": "./bin/main.d.ts",
