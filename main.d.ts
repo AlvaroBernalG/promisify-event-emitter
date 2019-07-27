@@ -21,4 +21,12 @@ export default class EventEmitterPromisified<A, B> {
     once(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
     times(eventName, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
+
+    defaultEventMaxListeners(): number;
+
+    setDefaultEventMaxListener(number): EventEmitterPromisified<A, B>;
+
+    setMaxEventListeners(evetnName: string, maxListeners: number): boolean;
+
+    getMaxEventListeners(eventName: string): number;
 }
