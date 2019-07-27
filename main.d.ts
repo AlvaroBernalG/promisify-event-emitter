@@ -8,7 +8,7 @@ export default class EventEmitterPromisified<A, B> {
 
     on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    prepend(eventName: string, eventCallback: Callback<A, B>) :EventEmitterPromisified<A, B>;
+    prepend(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
     emit(eventName: string, message?: Message<A>): Promise<Array<B>>; 
 
@@ -22,4 +22,3 @@ export default class EventEmitterPromisified<A, B> {
 
     times(eventName, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
 }
-

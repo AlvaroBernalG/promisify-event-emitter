@@ -1,5 +1,5 @@
 # ts-promisify-event-emitter
-> Another implementation of Event Emitter but with Promises
+> Another implementation of [Event Emitter](https://nodejs.org/api/events.html) but with Promises
 
 [![buddy pipeline](https://app.buddy.works/alvarobernalgimeno/ts-promisify-event-emitter/pipelines/pipeline/200299/badge.svg?token=f79a6421c158c33af76586dc76536693035d6d48c905e1b231beda515ddf01b1 "buddy pipeline")](https://app.buddy.works/alvarobernalgimeno/ts-promisify-event-emitter/pipelines/pipeline/200299) [![npm version](https://badge.fury.io/js/ts-promisify-event-emitter.svg)](https://badge.fury.io/js/ts-promisify-event-emitter)
 ## Install
@@ -53,4 +53,5 @@ events.on('getUser', callback);
 All contributions are welcome.
 
 ## License
+
 MIT
