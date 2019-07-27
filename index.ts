@@ -8,7 +8,7 @@ export interface Message<T> {
   payload: T
 }
 
-export interface IEventEnvelop<T, B> {
+interface IEventEnvelop<T, B> {
   maxListeners: number;
   callbacks: Array<Callback<T, B>>;
 }
