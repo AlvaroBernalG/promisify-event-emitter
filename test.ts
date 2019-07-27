@@ -118,7 +118,37 @@ const assert = (result: boolean, ...title: any[]) => {
   prependTest.prepend('prependtest', sayOne);
   prependTest.prepend('prependtest', sayTwo);
   prependTest.prepend('prependtest', sayThree);
-  let message = await prependTest.emit('prependtest', {payload: ''});
+  const message = await prependTest.emit('prependtest', {payload: ''});
   assert(message.join(' ') === 'three two one', 'prepend() should add callbacks at the begining of the array.', message);
+
+  prependTest.on('listenermax', sayOne);
+  prependTest.setMaxEventListeners('listenermax', 1);
+  assert(prependTest.getMaxEventListeners('listenermax') === 1, 
+    'getMaxEventListeners() should return the maximum amount of event listeners assigned to a eventName.', 
+    prependTest.getMaxEventListeners('listenermax')
+  );
+  prependTest.on('listenermax', sayTwo);
+  prependTest.on('listenermax', sayThree);
+  assert(prependTest.listeners('listenermax').length === 1, 
+    'setMaxEventListeners(eventName, n) should only allow registering n number of callbacks for eventName.',
+    prependTest.listeners('listenermax').length 
+  );
+  prependTest.setMaxEventListeners('doesnotexist', 30);
+  assert(prependTest.setMaxEventListeners('doesnotexist', 30) === false, 
+    'setEventMaxListener(eventName, max) should return false if eventName is not registered.', 
+    prependTest.setMaxEventListeners('doesnotexist', 30));
+
+  assert(prependTest.defaultEventMaxListeners() === 10, 
+    'defaultEventMaxListeners() should return the maximum amount of event listeners.',
+    prependTest.defaultEventMaxListeners()
+  );
+
+  prependTest.setDefaultEventMaxListener(20);
+  prependTest.on('__test__', sayOne);
+  assert((prependTest.defaultEventMaxListeners() === 20) && (prependTest.getMaxEventListeners('__test__') === 20), 
+    'setDefaultEventMaxListener(max) should modify the default maximum amount of event listeners.',
+    prependTest.defaultEventMaxListeners(),
+    prependTest.getMaxEventListeners('__test__') 
+  );
 
 })();

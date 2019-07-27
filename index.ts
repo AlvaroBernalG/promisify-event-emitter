@@ -8,32 +8,62 @@ export interface Message<T> {
   payload: T
 }
 
+export interface IEventEnvelop<T, B> {
+  maxListeners: number;
+  callbacks: Array<Callback<T, B>>;
+}
+
 export type Callback<T, B> = (emitterMessage: Message<T>) => Promise<B>;
 
 class EventEmitterPromisified<A, B> {
-  private callbacks = new Map<string, Array<Callback<A, B>>>();
+  private callbacks = new Map<string, IEventEnvelop<A, B>>();
+  private maxListeners = 10;
 
   on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B> {
-    const events = this.getCallbacks(eventName);
-    this.callbacks.set(eventName, [...events, eventCallback]);
+    this.setCallback(eventName, eventCallback);
     return this;
   }
 
   prepend(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B> {
-    const events = this.getCallbacks(eventName);
-    this.callbacks.set(eventName, [eventCallback, ...events]);
+    this.setCallback(eventName, eventCallback, true);
     return this;
   }
 
-  private getCallbacks(eventName: string): Array<Callback<A, B>> {
-    let events = this.callbacks.get(eventName);
-    events = events  === undefined ? [] : events;
-    return events;
+  defaultEventMaxListeners(): number {
+    return this.maxListeners;
+  }
+
+  setDefaultEventMaxListener(max: number): EventEmitterPromisified<A, B> {
+    this.maxListeners = max;
+    return this;
+  }
+
+  public setMaxEventListeners(eventName: string, maxListeners: number): boolean {
+    const envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    if (envelop === undefined) return false;
+    envelop.maxListeners = maxListeners;
+    this.callbacks.set(eventName, envelop);
+    return true;
+  }
+
+  public getMaxEventListeners(eventName: string): number {
+    const envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    return envelop.maxListeners;
+  }
+
+  private setCallback(eventName: string, eventCallback: Callback<A, B>, pre = false): boolean {
+    let envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    envelop = envelop === undefined ? {maxListeners: this.maxListeners, callbacks: []}: envelop; 
+    if (envelop.callbacks.length >= envelop.maxListeners) return false;
+    envelop.callbacks = pre ? [eventCallback, ...envelop.callbacks]: [...envelop.callbacks, eventCallback];
+    this.callbacks.set(eventName, envelop);
+    return true;
   }
 
   async emit(eventName: string, message?: Message<A>): Promise<Array<B>> {
     if (this.callbacks.has(eventName) === false) return Promise.resolve([]);
-    const events = this.callbacks.get(eventName);
+    const envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    const events = envelop.callbacks;
     return Promise.all(events.map(event => event(message)));
   }
 
@@ -42,14 +72,15 @@ class EventEmitterPromisified<A, B> {
       this.callbacks.delete(eventName);
       return this;
     }
-    let callbacks = this.getCallbacks(eventName);
-    callbacks = removeWhile(callbacks, (cb) => cb === eventCallback);
-    this.callbacks.set(eventName, callbacks);
+    let envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    envelop = envelop === undefined ? {maxListeners: this.maxListeners, callbacks: []}: envelop;
+    envelop.callbacks = removeWhile(envelop.callbacks, (cb) => cb === eventCallback);
     return this;
   }
 
   listeners(eventName: string): Array<Callback<A, B>> {
-    return this.callbacks.get(eventName);
+    const envelop = this.callbacks.get(eventName);
+    return envelop.callbacks;
   }
 
   eventNames(): Array<string> {
