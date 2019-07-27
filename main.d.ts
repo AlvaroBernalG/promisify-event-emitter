@@ -1,3 +1,8 @@
+interface IEventEnvelop<T, B> {
+    maxListeners: number;
+    callbacks: Array<Callback<T, B>>;
+}
+
 export interface Message<T> {
     payload: T
 }
@@ -5,6 +10,11 @@ export interface Message<T> {
 export type Callback<T, B> = (emitterMessage: Message<T>) => Promise<B>;
 
 export default class EventEmitterPromisified<A, B> {
+
+    private callbacks: Map<string, IEventEnvelop<A, B>>;
+    private maxListeners: number;
+
+    private setCallback(eventName: string, evetnCallback: Callback<A, B>, pre: boolean): boolean
 
     on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
