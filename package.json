@@ -1,19 +1,28 @@
 {
   "name": "ts-promisify-event-emitter",
   "version": "1.1.5",
-  "description": "Another implementation of Event Emitter but with Promises",
+  "description": "Another implementation of Event Emitter but strongly typed and 'promisified' and configurable maxListeners ",
   "main": "./bin/index.js",
   "types": "./bin/main.d.ts",
   "scripts": {
     "build": "rm -rf ./bin || mkdir bin && tsc --downlevelIteration --lib dom,es6 *.ts --outDir ./bin && cp ./main.d.ts ./bin/",
     "test": "npm run build && node ./bin/test.js"
   },
-  "author": "",
+  "author": "Alvaro Bernal Gimeno",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^12.6.8",
     "typescript": "^3.5.3"
   },
+  "keywords": [
+    "event",
+    "listener",
+    "promise",
+    "promisified",
+    "types",
+    "typescript",
+    "emitter"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/AlvaroBernalG/ts-promisify-event-emitter"
