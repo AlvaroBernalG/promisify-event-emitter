@@ -41,6 +41,14 @@ const assert = (result: boolean, ...title: any[]) => {
   const res = await events.emit('counter', {payload: 'yeap'});
   assert(res.join(' ') === 'one two three', 'emit() should return the value of all listeners.', res.join(' '));
 
+  const listTest = new EventPromise<void, number>();
+  const dummyListenerCallback = async () => 1;
+  listTest.on('listeners', dummyListenerCallback);
+  listTest.on('listeners', dummyListenerCallback);
+  listTest.on('listeners', dummyListenerCallback);
+  assert(listTest.listeners('listeners').length === 3, 
+    'listeners() should return list of all callbacks registered in a event name.', listTest.listeners('listeners').length);
+
   const numbers = new EventPromise<number,number>();
   numbers.on('sum', async (m: Message<number>) => {
     return m.payload + 1;
@@ -64,13 +72,6 @@ const assert = (result: boolean, ...title: any[]) => {
   });
   numbers.emit('once', {payload: 3});
 
-  const listTest = new EventPromise<void, number>();
-  const dummyListenerCallback = async () => 1;
-  listTest.on('listeners', dummyListenerCallback);
-  listTest.on('listeners', dummyListenerCallback);
-  listTest.on('listeners', dummyListenerCallback);
-  assert(listTest.listeners('listeners').length === 3, 
-    'listeners() should return list of all callbacks registered in a event name.', listTest.listeners('listeners').length);
   
   const eventNames = new EventPromise<void, number>();
   eventNames.on('0', dummyListenerCallback);
