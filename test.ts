@@ -60,11 +60,11 @@ const assert = (result: boolean, ...title: any[]) => {
   numbers.on('sum', plusOne);
   numbers.off('sum', plusOne);
   let sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult.reduce(sum, 0) === 2, 'off() should be able to remove all callbacks instances.', sumResult);
+  assert(sumResult.reduce(sum, 0) === 2, 'off(eventName, callbackInstance) should be able to remove all callbacks instances associated with a event name.', sumResult);
 
   numbers.off('sum');
   sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult.length === 0, 'off() should be able to remove all callbacks of a event name if no callback instance is passed.', sumResult);
+  assert(sumResult.length === 0, 'off(eventName) should be able to remove all callbacks associated with a event Name if no callback instance is passed.', sumResult);
 
   numbers.on('once', async(m: Message<number>): Promise<number> => {
     assert(m.payload === 3, 'on() callback should correctly handle execution.');
