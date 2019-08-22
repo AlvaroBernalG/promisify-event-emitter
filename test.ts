@@ -36,18 +36,28 @@ const assert = (result: boolean, ...title: any[]) => {
   
   assert(events.emit('counter') instanceof Promise, 'emit() should return a Promise.');
 
-  assert(events.emit('does not exits') instanceof Promise, 'emit() should return a Promise when no callbacks are registered with a event name.');
+  assert(
+    events.emit('does not exits') instanceof Promise, 
+    'emit() should return a Promise when no callbacks are registered with a event name.'
+  );
 
   const res = await events.emit('counter', {payload: 'yeap'});
-  assert(res.join(' ') === 'one two three', 'emit() should return the value of all listeners.', res.join(' '));
+  assert(
+    res.join(' ') === 'one two three', 
+    'emit() should return the value of all listeners.', 
+    res.join(' ')
+  );
 
   const listTest = new EventPromise<void, number>();
   const dummyListenerCallback = async () => 1;
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
-  assert(listTest.listeners('listeners').length === 3, 
-    'listeners() should return list of all callbacks registered in a event name.', listTest.listeners('listeners').length);
+  assert(
+    listTest.listeners('listeners').length === 3, 
+    'listeners() should return list of all callbacks registered in a event name.', 
+    listTest.listeners('listeners').length
+  );
 
   const numbers = new EventPromise<number,number>();
   numbers.on('sum', async (m: Message<number>) => {
@@ -60,11 +70,19 @@ const assert = (result: boolean, ...title: any[]) => {
   numbers.on('sum', plusOne);
   numbers.off('sum', plusOne);
   let sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult.reduce(sum, 0) === 2, 'off(eventName, callbackInstance) should be able to remove all callbacks instances associated with a event name.', sumResult);
+  assert(
+    sumResult.reduce(sum, 0) === 2, 
+    'off(eventName, callbackInstance) should be able to remove all callbacks instances associated with a event name.', 
+    sumResult
+  );
 
   numbers.off('sum');
   sumResult = await numbers.emit('sum', {payload: 0});
-  assert(sumResult.length === 0, 'off(eventName) should be able to remove all callbacks associated with a event Name if no callback instance is passed.', sumResult);
+  assert(
+    sumResult.length === 0, 
+    'off(eventName) should be able to remove all callbacks associated with a event Name if no callback instance is passed.',
+    sumResult
+  );
 
   numbers.on('once', async(m: Message<number>): Promise<number> => {
     assert(m.payload === 3, 'on() callback should correctly handle execution.');
@@ -77,8 +95,11 @@ const assert = (result: boolean, ...title: any[]) => {
   eventNames.on('0', dummyListenerCallback);
   eventNames.on('1', dummyListenerCallback);
   eventNames.on('2', dummyListenerCallback);
-  assert(eventNames.eventNames().join(' ') === '0 1 2', 
-    'eventNames() should return an array with all the eventnames registered.', eventNames.eventNames().join(' '));
+  assert(
+    eventNames.eventNames().join(' ') === '0 1 2', 
+    'eventNames() should return an array with all the eventnames registered.', 
+    eventNames.eventNames().join(' ')
+  );
 
   const oncetest = new EventPromise<number, number>();
   let counter = 0;
@@ -108,9 +129,11 @@ const assert = (result: boolean, ...title: any[]) => {
   await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
   await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
   await timestest.emit('timetestEventName', {payload: onceTestRes[0]});
-  assert(counter === 3 && onceTestRes.length === 1, 
+  assert(
+    counter === 3 && onceTestRes.length === 1, 
     'times() should register a callback that is only called n amount of times and then removed.', 
-    counter, onceTestRes);
+    counter, onceTestRes
+  );
 
   const prependTest = new EventPromise<string, string>();
   const sayOne = async(m: Message<string>): Promise<string> => 'one' + m.payload 
@@ -120,36 +143,45 @@ const assert = (result: boolean, ...title: any[]) => {
   prependTest.prepend('prependtest', sayTwo);
   prependTest.prepend('prependtest', sayThree);
   const message = await prependTest.emit('prependtest', {payload: ''});
-  assert(message.join(' ') === 'three two one', 'prepend() should add callbacks at the begining of the array.', message);
+  assert(
+    message.join(' ') === 'three two one', 
+    'prepend() should add callbacks at the begining of the array.', 
+    message
+  );
 
   prependTest.on('listenermax', sayOne);
   prependTest.setMaxEventListeners('listenermax', 1);
-  assert(prependTest.getMaxEventListeners('listenermax') === 1, 
+  assert(
+    prependTest.getMaxEventListeners('listenermax') === 1, 
     'getMaxEventListeners() should return the maximum amount of event listeners assigned to a eventName.', 
     prependTest.getMaxEventListeners('listenermax')
   );
   prependTest.on('listenermax', sayTwo);
   prependTest.on('listenermax', sayThree);
-  assert(prependTest.listeners('listenermax').length === 1, 
+  assert(
+    prependTest.listeners('listenermax').length === 1, 
     'setMaxEventListeners(eventName, n) should only allow registering n number of callbacks for eventName.',
     prependTest.listeners('listenermax').length 
   );
   prependTest.setMaxEventListeners('doesnotexist', 30);
-  assert(prependTest.setMaxEventListeners('doesnotexist', 30) === false, 
+  assert(
+    prependTest.setMaxEventListeners('doesnotexist', 30) === false, 
     'setEventMaxListener(eventName, max) should return false if eventName is not registered.', 
-    prependTest.setMaxEventListeners('doesnotexist', 30));
+    prependTest.setMaxEventListeners('doesnotexist', 30)
+  );
 
-  assert(prependTest.defaultEventMaxListeners() === 10, 
+  assert(
+    prependTest.defaultEventMaxListeners() === 10, 
     'defaultEventMaxListeners() should return the maximum amount of event listeners.',
     prependTest.defaultEventMaxListeners()
   );
 
   prependTest.setDefaultEventMaxListener(20);
   prependTest.on('__test__', sayOne);
-  assert((prependTest.defaultEventMaxListeners() === 20) && (prependTest.getMaxEventListeners('__test__') === 20), 
+  assert(
+    (prependTest.defaultEventMaxListeners() === 20) && (prependTest.getMaxEventListeners('__test__') === 20), 
     'setDefaultEventMaxListener(max) should modify the default maximum amount of event listeners.',
-    prependTest.defaultEventMaxListeners(),
-    prependTest.getMaxEventListeners('__test__') 
+    prependTest.defaultEventMaxListeners(), prependTest.getMaxEventListeners('__test__') 
   );
 
 })();
