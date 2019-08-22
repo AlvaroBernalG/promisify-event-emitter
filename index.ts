@@ -1,9 +1,3 @@
-function removeWhile<T> (arr: Array<T>, fn: (T) => boolean): Array<T> {
-  return arr.reduce((acc: Array<T>, next: T) =>
-    fn(next) ? acc : [...acc, next]
-  ,[]);
-}
-
 export interface Message<T> {
   payload: T
 }
@@ -74,7 +68,7 @@ class EventEmitterPromisified<A, B> {
     }
     let envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
     envelop = envelop === undefined ? {maxListeners: this.maxListeners, callbacks: []}: envelop;
-    envelop.callbacks = removeWhile(envelop.callbacks, (cb) => cb === eventCallback);
+    envelop.callbacks = envelop.callbacks.filter((cb) => cb !== eventCallback);
     return this;
   }
 
