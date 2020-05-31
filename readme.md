@@ -13,7 +13,7 @@ $ npm install ts-promisify-event-emitter
 
 Basic usage:
 
-```js
+```ts
 import EventEmitterPromisified, {Message, Callback} from 'ts-promisify-event-emitter';
 
 // Result type
