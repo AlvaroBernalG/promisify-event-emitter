@@ -187,4 +187,13 @@ const assert = (result: boolean, ...title: any[]) => {
   );
 
   const test = new EventEmitterPromisified<string, string>(); 
+  test.on('myevent', async () => {
+    return 'yeap';
+  });
+
+  assert(
+    test.exist('myevent'),
+    'exist() should return true if the an event is registered'
+  );
+
 })();

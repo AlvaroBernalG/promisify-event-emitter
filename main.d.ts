@@ -34,4 +34,6 @@ export default class EventEmitterPromisified<A, B> {
     setMaxEventListeners(evetnName: string, maxListeners: number): boolean;
 
     getMaxEventListeners(eventName: string): number;
+
+    exist(eventName: string): boolean;
 }
