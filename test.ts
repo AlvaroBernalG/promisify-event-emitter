@@ -27,6 +27,7 @@ const assert = (result: boolean, ...title: any[]) => {
   const countOne = async (): Promise<string> => {
     return 'one';
   }
+  const nothing = {payload: ''};
   events.on('counter', countOne);
   events.on('counter', async (): Promise<string> => {
     await wait(300); 
@@ -34,10 +35,10 @@ const assert = (result: boolean, ...title: any[]) => {
   });
   events.on('counter', async () => 'three');
   
-  assert(events.emit('counter') instanceof Promise, 'emit() should return a Promise.');
+  assert(events.emit('counter', nothing) instanceof Promise, 'emit() should return a Promise.');
 
   assert(
-    events.emit('does not exits') instanceof Promise, 
+    events.emit('does not exits', nothing) instanceof Promise, 
     'emit() should return a Promise when no callbacks are registered with a event name.'
   );
 
@@ -109,10 +110,11 @@ const assert = (result: boolean, ...title: any[]) => {
     return m.payload;
   });
   let onceTestRes = await oncetest.emit('oncetest', {payload: counter});
-  oncetest.emit('oncetest');
-  oncetest.emit('oncetest');
-  oncetest.emit('oncetest');
-  oncetest.emit('oncetest');
+  const cero = {payload: 0};
+  oncetest.emit('oncetest', cero);
+  oncetest.emit('oncetest', cero);
+  oncetest.emit('oncetest', cero);
+  oncetest.emit('oncetest', cero);
   assert(counter === 1 && onceTestRes.length === 1 && onceTestRes[0] === 2, 
     'once() should register a callback that is only called once and then removed.', 
     counter, onceTestRes);

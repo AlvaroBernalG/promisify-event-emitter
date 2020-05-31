@@ -11,16 +11,11 @@ export type Callback<T, B> = (emitterMessage: Message<T>) => Promise<B>;
 
 export default class EventEmitterPromisified<A, B> {
 
-    private callbacks: Map<string, IEventEnvelop<A, B>>;
-    private maxListeners: number;
-
-    private setCallback(eventName: string, evetnCallback: Callback<A, B>, pre: boolean): boolean
-
     on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
     prepend(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    emit(eventName: string, message?: Message<A>): Promise<Array<B>>; 
+    emit(eventName: string, message: Message<A>): Promise<Array<B>>; 
 
     off(eventName: string, eventCallback?: Callback<A, B>): EventEmitterPromisified<A, B>;
 
@@ -30,11 +25,11 @@ export default class EventEmitterPromisified<A, B> {
 
     once(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    times(eventName, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
+    times(eventName: string, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
 
     defaultEventMaxListeners(): number;
 
-    setDefaultEventMaxListener(number): EventEmitterPromisified<A, B>;
+    setDefaultEventMaxListener(n: number): EventEmitterPromisified<A, B>;
 
     setMaxEventListeners(evetnName: string, maxListeners: number): boolean;
 

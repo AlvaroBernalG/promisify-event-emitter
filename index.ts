@@ -33,7 +33,7 @@ class EventEmitterPromisified<A, B> {
   }
 
   public setMaxEventListeners(eventName: string, maxListeners: number): boolean {
-    const envelop: IEventEnvelop<A, B> = this.callbacks.get(eventName);
+    const envelop = this.callbacks.get(eventName);
     if (envelop === undefined) return false;
     envelop.maxListeners = maxListeners;
     this.callbacks.set(eventName, envelop);
@@ -75,6 +75,9 @@ class EventEmitterPromisified<A, B> {
     const envelop = this.callbacks.get(eventName);
     return envelop?.callbacks;
   }
+
+  exist(eventName: string): boolean {
+    return this.callbacks.get(eventName) !== undefined;
   }
 
   eventNames(): Array<string> {
