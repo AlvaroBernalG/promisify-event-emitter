@@ -1,4 +1,4 @@
-import EventPromise, {Message, Callback} from './index';
+import EventEmitterPromisified, {Message} from './index';
 
 enum EXIT {
   SUCESS,
@@ -23,7 +23,7 @@ const assert = (result: boolean, ...title: any[]) => {
 (async function start() {
 
   log('Starting test...');
-  const events = new EventPromise<string, string>(); 
+  const events = new EventEmitterPromisified<string, string>(); 
   const countOne = async (): Promise<string> => {
     return 'one';
   }
@@ -49,18 +49,18 @@ const assert = (result: boolean, ...title: any[]) => {
     res.join(' ')
   );
 
-  const listTest = new EventPromise<void, number>();
+  const listTest = new EventEmitterPromisified<void, number>();
   const dummyListenerCallback = async () => 1;
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
   listTest.on('listeners', dummyListenerCallback);
   assert(
-    listTest.listeners('listeners').length === 3, 
+    listTest.listeners('listeners')?.length === 3, 
     'listeners() should return list of all callbacks registered in a event name.', 
-    listTest.listeners('listeners').length
+    listTest.listeners('listeners')?.length
   );
 
-  const numbers = new EventPromise<number,number>();
+  const numbers = new EventEmitterPromisified<number,number>();
   numbers.on('sum', async (m: Message<number>) => {
     return m.payload + 1;
   });
@@ -92,7 +92,7 @@ const assert = (result: boolean, ...title: any[]) => {
   numbers.emit('once', {payload: 3});
 
   
-  const eventNames = new EventPromise<void, number>();
+  const eventNames = new EventEmitterPromisified<void, number>();
   eventNames.on('0', dummyListenerCallback);
   eventNames.on('1', dummyListenerCallback);
   eventNames.on('2', dummyListenerCallback);
@@ -102,7 +102,7 @@ const assert = (result: boolean, ...title: any[]) => {
     eventNames.eventNames().join(' ')
   );
 
-  const oncetest = new EventPromise<number, number>();
+  const oncetest = new EventEmitterPromisified<number, number>();
   let counter = 0;
   oncetest.once('oncetest', async (m: Message<number>): Promise<number> => {
     counter += 1;
@@ -119,7 +119,7 @@ const assert = (result: boolean, ...title: any[]) => {
     'once() should register a callback that is only called once and then removed.', 
     counter, onceTestRes);
 
-  const timestest = new EventPromise<number, number>();
+  const timestest = new EventEmitterPromisified<number, number>();
   counter = 0;
   timestest.times('timetestEventName', async (m: Message<number>): Promise<number> => {
     counter += 1;
@@ -137,7 +137,7 @@ const assert = (result: boolean, ...title: any[]) => {
     counter, onceTestRes
   );
 
-  const prependTest = new EventPromise<string, string>();
+  const prependTest = new EventEmitterPromisified<string, string>();
   const sayOne = async(m: Message<string>): Promise<string> => 'one' + m.payload 
   const sayTwo = async(m: Message<string>): Promise<string> => 'two' + m.payload
   const sayThree = async(m: Message<string>): Promise<string> =>  'three' + m.payload
@@ -161,9 +161,9 @@ const assert = (result: boolean, ...title: any[]) => {
   prependTest.on('listenermax', sayTwo);
   prependTest.on('listenermax', sayThree);
   assert(
-    prependTest.listeners('listenermax').length === 1, 
+    prependTest.listeners('listenermax')?.length === 1, 
     'setMaxEventListeners(eventName, n) should only allow registering n number of callbacks for eventName.',
-    prependTest.listeners('listenermax').length 
+    prependTest.listeners('listenermax')?.length 
   );
   prependTest.setMaxEventListeners('doesnotexist', 30);
   assert(
@@ -186,4 +186,5 @@ const assert = (result: boolean, ...title: any[]) => {
     prependTest.defaultEventMaxListeners(), prependTest.getMaxEventListeners('__test__') 
   );
 
+  const test = new EventEmitterPromisified<string, string>(); 
 })();
