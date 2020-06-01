@@ -50,6 +50,12 @@ events.on('getUser', callback);
 })();
 ```
 
+### Deno
+```ts
+import EventEmitterPromisified, {Message, Callback} from 'https://alvarobg.com/deno/ts_promisfy_event_emitter/1.1.10/index.ts';
+
+
+```
 ## Contributing
 
 All contributions are welcome.
