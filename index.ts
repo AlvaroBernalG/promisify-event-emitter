@@ -46,8 +46,9 @@ class EventEmitterPromisified<A, B> {
   }
 
   private setCallback(eventName: string, eventCallback: Callback<A, B>, pre = false): boolean {
-    let envelop: IEventEnvelop<A, B> | undefined = this.callbacks.get(eventName);
-    envelop = envelop === undefined ? {maxListeners: this.maxListeners, callbacks: []}: envelop; 
+    const envelop: IEventEnvelop<A, B> = this.exist(eventName) ? 
+      this.callbacks.get(eventName) as IEventEnvelop<A, B> : 
+      {maxListeners: this.maxListeners, callbacks: []};
     if (envelop.callbacks.length >= envelop.maxListeners) return false;
     envelop.callbacks = pre ? [eventCallback, ...envelop.callbacks]: [...envelop.callbacks, eventCallback];
     this.callbacks.set(eventName, envelop);
@@ -56,8 +57,9 @@ class EventEmitterPromisified<A, B> {
 
   async emit(eventName: string, message: Message<A>): Promise<Array<B>> {
     const envelop: IEventEnvelop<A, B> | undefined = this.callbacks.get(eventName);
-    if (envelop === undefined) return Promise.resolve([]);
-    return Promise.all(envelop.callbacks.map(event => event(message)));
+    return (envelop === undefined) ? 
+      [] : 
+      Promise.all(envelop.callbacks.map(event => event(message)));
   }
 
   off(eventName: string, eventCallback?: Callback<A, B>): EventEmitterPromisified<A, B> {
@@ -65,8 +67,10 @@ class EventEmitterPromisified<A, B> {
       this.callbacks.delete(eventName);
       return this;
     }
-    let envelop: IEventEnvelop<A, B> | undefined = this.callbacks.get(eventName);
-    envelop = envelop === undefined ? {maxListeners: this.maxListeners, callbacks: []}: envelop;
+    const envelop: IEventEnvelop<A, B> = this.exist(eventName) ? 
+      this.callbacks.get(eventName) as IEventEnvelop<A, B> : 
+      {maxListeners: this.maxListeners, callbacks: []};
+
     envelop.callbacks = envelop.callbacks.filter((cb) => cb !== eventCallback);
     return this;
   }
