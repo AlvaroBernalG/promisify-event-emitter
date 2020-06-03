@@ -42,7 +42,7 @@ class EventEmitterPromisified<A, B> {
 
   public getMaxEventListeners(eventName: string): number {
     const envelop = this.callbacks.get(eventName);
-    return envelop?.maxListeners ?? 0;
+    return envelop?.maxListeners ?? this.maxListeners;
   }
 
   private setCallback(eventName: string, eventCallback: Callback<A, B>, pre = false): boolean {
