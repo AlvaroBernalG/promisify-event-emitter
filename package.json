@@ -1,6 +1,6 @@
 {
   "name": "ts-promisify-event-emitter",
-  "version": "1.1.10",
+  "version": "1.2.00",
   "description": "Another implementation of Event Emitter but strongly typed, 'promisified' and configurable maxListeners ",
   "main": "./bin/index.js",
   "types": "./bin/main.d.ts",
