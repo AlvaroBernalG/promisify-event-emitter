@@ -1,39 +1,39 @@
 interface IEventEnvelop<T, B> {
-    maxListeners: number;
-    callbacks: Array<Callback<T, B>>;
+  maxListeners: number;
+  callbacks: Array<Callback<T, B>>;
 }
 
 export interface Message<T> {
-    payload: T
+  payload: T
 }
 
 export type Callback<T, B> = (emitterMessage: Message<T>) => Promise<B>;
 
 export default class EventEmitterPromisified<A, B> {
 
-    on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
+  on(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    prepend(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
+  prepend(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    emit(eventName: string, message: Message<A>): Promise<Array<B>>; 
+  emit(eventName: string, message: Message<A>): Promise<Array<B>>;
 
-    off(eventName: string, eventCallback?: Callback<A, B>): EventEmitterPromisified<A, B>;
+  off(eventName: string, eventCallback?: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    listeners(eventName: string): Array<Callback<A, B>>;
-    
-    eventNames(): Array<string>;
+  listeners(eventName: string): Array<Callback<A, B>>;
 
-    once(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
+  eventNames(): Array<string>;
 
-    times(eventName: string, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
+  once(eventName: string, eventCallback: Callback<A, B>): EventEmitterPromisified<A, B>;
 
-    defaultEventMaxListeners(): number;
+  times(eventName: string, eventCallback: Callback<A, B>, times: number): EventEmitterPromisified<A, B>;
 
-    setDefaultEventMaxListener(n: number): EventEmitterPromisified<A, B>;
+  defaultEventMaxListeners(): number;
 
-    setMaxEventListeners(evetnName: string, maxListeners: number): boolean;
+  setDefaultEventMaxListener(n: number): EventEmitterPromisified<A, B>;
 
-    getMaxEventListeners(eventName: string): number;
+  setMaxEventListeners(evetnName: string, maxListeners: number): boolean;
 
-    exist(eventName: string): boolean;
+  getMaxEventListeners(eventName: string): number;
+
+  exist(eventName: string): boolean;
 }
