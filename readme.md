@@ -18,8 +18,8 @@ import EventEmitterPromisified, {Message, Callback} from 'ts-promisify-event-emi
 
 // Result type
 interface IUser {
-    name: string;
-    lastname: string;
+  name: string;
+  lastname: string;
 }
 // Query type
 interface IQuery {
@@ -27,11 +27,11 @@ interface IQuery {
 }
 
 async function getUserFromDatabase(id: string): Promise<IUser> {
-    // do something async
-    return {
-        name: 'Test',
-        lastname: 'Testing'
-    }
+  // do something async
+  return {
+    name: 'Test',
+    lastname: 'Testing'
+  }
 }
 
 const events = new EventEmitterPromisified<IQuery, IUser>();
